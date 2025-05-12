@@ -1,0 +1,32 @@
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+    command: npm run dev
+    depends_on:
+      - server
+
+  server:
+    build: ./server
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./server/.env
+    volumes:
+      - ./server:/app
+    command: npm run dev
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
